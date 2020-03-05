@@ -3,6 +3,7 @@
 #include <string>
 #include "node.h"
 #include <cstring>
+#include <ctime>
 
 using namespace std;
 
@@ -30,6 +31,7 @@ struct Claim{
 };
 
 int main(){
+    double start = time(NULL);
     fstream file("day3.txt");
     string line;
     Node<string>* dHead = new Node<string>("");
@@ -45,13 +47,15 @@ int main(){
     for(auto p = dHead;p;p=p->next){        
         end->insertEnd(Claim(p->data));
         end = end->next;
-        cout<<p->data<<endl;
+        //cout<<p->data<<endl;
         maxX = end->data.x+end->data.w+1 > maxX ? end->data.x+end->data.w+1 : maxX;
         maxY = end->data.y+end->data.h+1 > maxY ? end->data.y+end->data.h+1 : maxY;
     }
     //Head points to linked list of Claim objects
     //Claim has id, x, y, w, h
     cout<<"\nmaking grid of size "<<maxX<<"x"<<maxY<<endl;
+
+    head = head->next;
 
     int grid[maxY][maxX];
     for(int i = 0;i<maxY;i++){
@@ -90,6 +94,25 @@ int main(){
         //cout<<endl;
     }
 
-    cout<<"Overlapping squares: "<<overlapping<<endl;
+    
 
+    cout<<"Overlapping squares: "<<overlapping<<endl;
+    //part 2
+    for(auto p = head;p;p=p->next){
+        bool untouched = true;
+        dat = p->data;
+        for(int x = dat.x;x<dat.x+dat.w;x++){
+            for(int y = dat.y;y<dat.y+dat.h;y++){
+                if(grid[y][x] != dat.id){
+                    untouched = false;
+                }
+            }
+        }
+        if(untouched){
+            cout<<"Claim "<<dat.id<<" is untouched!"<<endl;
+        }
+    }
+
+    double final = time(NULL);
+    cout<<"Finished, took "<<(final-start)<<" seconds."<<endl;
 }
