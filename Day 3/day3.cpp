@@ -53,8 +53,43 @@ int main(){
     //Claim has id, x, y, w, h
     cout<<"\nmaking grid of size "<<maxX<<"x"<<maxY<<endl;
 
-    int grid[maxX][maxY];
+    int grid[maxY][maxX];
+    for(int i = 0;i<maxY;i++){
+        for(int j = 0;j<maxX;j++){
+            grid[j][i] = 0;
+        }
+    }
     
+    Claim dat;
+    for(auto p = head;p;p=p->next){
+        dat = p->data;
+        for(int x = dat.x;x<dat.x+dat.w;x++){
+            for(int y = dat.y;y<dat.y+dat.h;y++){
+                grid[y][x] = grid[y][x] == 0? dat.id: -1;
+            }
+        }
+    }
 
+    int overlapping = 0;
+    for(int i = 0;i<maxY;i++){
+        for(int j = 0;j<maxX;j++){
+            switch(grid[j][i]){
+                case -1:
+                    //cout<<"#";
+                    overlapping++;
+                    break;
+                case 0:
+                    //cout<<".";
+                    break;
+                default:
+                    break;
+                    //cout<<grid[j][i];
+                
+            }
+        }
+        //cout<<endl;
+    }
+
+    cout<<"Overlapping squares: "<<overlapping<<endl;
 
 }
