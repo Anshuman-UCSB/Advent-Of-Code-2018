@@ -10,6 +10,7 @@ int main(){
     }
     insert(head,new Node<int>(-1));
     insert(head,new Node<int>(1));
+    insert(head,10);
     for(auto p = head;p;p=p->next){
         cout<<p->data<<" -> ";
     }cout<<endl;

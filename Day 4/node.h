@@ -27,7 +27,7 @@ void insert(Node<T>*& head, Node<T>* n){
         head = n;
         return;
     }
-    if(n->data<head->data){
+    if(n->data<=head->data){
         n->next = head;
         head = n;
         return;
