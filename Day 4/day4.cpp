@@ -25,11 +25,8 @@ struct event{
         minute = stoi(str.substr(15,2));
         action = str.substr(19);
         string comb = str.substr(1,4)+ str.substr(6,2) + str.substr(9,2);
-        if(str.substr(12,2) == "00"){
-            comb+="50";
-        }else{
-            comb+=str.substr(12,2);
-        }
+        comb+=str.substr(12,2);
+        
         comb+=str.substr(15,2);
         relNum = stol(comb);
     }
@@ -83,14 +80,13 @@ int sumSleep(guard g){
 
 int main(){
     fstream file("day4.txt");
+    ofstream out("day4sorted.txt");
     string line;
     Node<event>* head = 0;
     while(getline(file,line)){
         insert(head,event(line));
     }
     file.close();
-    head = head->next;
-    auto p = head;
 
     Node<guard>* guards = 0;
     int cId = -1;
@@ -111,11 +107,48 @@ int main(){
             }
             g->data.logSleep(p->data.minute,p->next->data.minute);
         }
-        if(cId == 2753){
+        out<<p->data.raw<<endl;
+        if(cId == 1439){
             cout<<p->data.raw<<endl;
         }
     }
+    out.close();
+    //part 2
+    int tempTime = -1;
+    int mostTime;
+    int mostMin = -1;
+    guard freqG = 0;
+    for(auto g = guards;g;g=g->next){
+        int max = -1;
+        int t;
+        for(int i = 0;i<60;i++){
+            t = g->data.timesSlept[i];
+            if(t>=max){
+                tempTime = i;
+                max = t;
+            }
+        } //max is the freq, tempTime is the minute
+        cout<<"Guard "<<g->data.id<<" slept the most on minute "<<tempTime<<", for "<<max<<" times. "<<endl;
+        if(max>mostMin){
+            //cout<<"new max freq, "<<max<<" on id "<<g->data.id<<endl;
+            for(int i= 0;i<60;i++){
+            //    cout<<g->data.timesSlept[i]<<" ";
+            }//cout<<endl;
+            mostTime = tempTime;
+            mostMin = max;
+            freqG = g->data;
+        }
+    }
+    cout<<"Guard "<<freqG.id<<" slept the most on min "<<mostTime<<", for a total of "<<mostMin<<" times.\n";
 
+    //50365 too high, Guard 1439 slept the most on min 35, for a total of 14 times.
+
+
+
+
+
+    return 0;
+    //Part 1
     guard mostSleep;
     int maxSleep = -1;
     for(auto p = guards;p;p=p->next){
@@ -132,7 +165,6 @@ int main(){
             cout<<endl;
         }
     }
-
     cout<<"Most sleep guard is "<<mostSleep.id<<".\n";
     int most = -1;
     int time = -1;
