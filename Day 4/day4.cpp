@@ -41,13 +41,12 @@ bool operator<=(const event& e1, const event& e2){
 int main(){
     fstream file("day4.txt");
     string line;
-    Node<event>* head;
+    Node<event>* head = 0;
     while(getline(file,line)){
         //cout<<line<<endl;
         insert(head,event(line));
     }
     file.close();
-
     head = head->next;
     for(auto p = head; p;p=p->next){
         cout<<p->data.raw<<endl;
