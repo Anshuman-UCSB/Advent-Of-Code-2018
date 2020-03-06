@@ -33,8 +33,8 @@ void insert(Node<T>*& head, Node<T>* n){
         head = n;
         return;
     }
-    auto p = head->next;
-    auto l = head;
+    Node<T>* p = head->next;
+    Node<T>* l = head;
     for(;p;p=p->next){
         if(n->data<=p->data){
             l->next = n;
@@ -45,4 +45,14 @@ void insert(Node<T>*& head, Node<T>* n){
     }
     l->next = n;
 
+}
+
+template <class T>
+bool inList(Node<T>*& head, T n){
+    for(Node<T>* p = head;p;p=p->next){
+        if(p->data == n){
+            return true;
+        }
+    }
+    return false;
 }
