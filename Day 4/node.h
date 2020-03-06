@@ -1,4 +1,5 @@
-
+#include <iostream>
+using namespace std;
 template<class T>
 class Node{
     public:
@@ -34,7 +35,7 @@ void insert(Node<T>*& head, Node<T>* n){
     }
     auto p = head->next;
     auto l = head;
-    for(;p->next;p=p->next){
+    for(;p;p=p->next){
         if(n->data<=p->data){
             l->next = n;
             n->next = p;
@@ -42,5 +43,6 @@ void insert(Node<T>*& head, Node<T>* n){
         }
         l = l->next;
     }
-    p->next = n;
+    l->next = n;
+
 }
