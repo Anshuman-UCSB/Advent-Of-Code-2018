@@ -89,7 +89,7 @@ void evalGrid(vector<Coord> coords, vector<vector<char>> &grid){
                 if(dupe){
                     addCoord(grid,c.x,c.y,'.');
                 } else {
-                    addCoord(grid,c.x,c.y,'a'+ind);
+                    addCoord(grid,c.x,c.y,'A'+ind);
                 }
                 
             }
@@ -129,6 +129,19 @@ bool isInfinite(vector<vector<char>> &grid, char search){
     return false;
 }
 
+void write(vector<vector<char>> grid, string filename){
+    ofstream file(filename);
+    if(file.is_open()){
+        for(int row = 0;row<grid.size();row++){
+            for(int col = 0;col<grid[0].size();col++){
+                file<<grid[row][col];
+            }file<<endl;
+        }
+
+        file.close();
+    }
+}
+
 int main(){
     string line;
     fstream file("day6.txt");
@@ -153,7 +166,7 @@ int main(){
     expandGrid(grid, 4, 4);
     char id = 'A';
     for(int i = 0;i<coords.size();i++){
-        addCoord(grid,coords[i].x,coords[i].y,id+i);
+        addCoord(grid,coords[i].x,coords[i].y,'#');
     }
     printGrid(grid);
     
@@ -161,11 +174,24 @@ int main(){
     evalGrid(coords,grid);
     cout<<"################"<<endl;
     printGrid(grid);
-    char check = 'a';
-    cout<<"Area of "<<check<<" is "<<getArea(grid, check)<<endl;
-    if(isInfinite(grid,check)){
-        cout<<check<<" is infinite."<<endl;
-    } else{
-        cout<<check<<" is not infinite."<<endl;
+
+    //Write to file
+    write(grid, "day6out.txt");
+
+    int maxSize = -1;
+
+    char check = 'A';
+    cout<<coords.size()<<endl;
+    for(int i = 0;i<coords.size();i++){
+        int area = getArea(grid, check);
+        cout<<"Area of "<<check<<" is "<<area<<endl;
+        if(isInfinite(grid,check)){
+            cout<<check<<" is infinite."<<endl;
+        } else{
+            cout<<check<<" is finite."<<endl;
+            maxSize = maxSize < area?area:maxSize;
+        }
+        check++;
     }
+    cout<<maxSize<<endl;
 }
