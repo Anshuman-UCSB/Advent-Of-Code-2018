@@ -44,10 +44,29 @@ void updateAble(vector<char>& able, const vector<char>& made, const vector<Rule>
         if(isInVector<char>(able,rule.make)){ //if result is in able vector
             if(!isInVector<char>(made, rule.pre)){
                 //if prereq is not made,
-                
+                for(int i = 0;i<able.size();i++){
+                    if(able[i] == rule.make){
+                        able.erase(able.begin()+i);
+                    }
+                }
             }
         }
     }
+}
+
+void makeElem(const vector<char>& able, vector<char>& made){
+    char min = 'Z' + 1;
+    for(char elem: able){
+        min = min<elem? min : elem;
+    }
+    made.push_back(min);
+}
+
+template <class T>
+void printVector(vector<T> vect){
+    for(T elem: vect){
+        cout<< elem << " ";
+    }cout<<endl;
 }
 
 int main(){
@@ -70,12 +89,13 @@ int main(){
             elems.push_back(rules[i].make);
         }
     }
-    for(int i = 0;i<elems.size();i++){
-        cout<<elems[i]<<" ";
-    }cout<<endl;
+    printVector<char>(elems);
 
     vector<char> done;
     vector<char> able;
-
-
+    while(done.size()<elems.size()){
+        updateAble(able, done, rules, elems);
+        makeElem(able, done);
+    }
+    
 }
