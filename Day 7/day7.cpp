@@ -97,5 +97,9 @@ int main(){
         updateAble(able, done, rules, elems);
         makeElem(able, done);
     }
+    cout<<"Final answer:\n";
+    for(char elem:done){
+        cout<<elem;
+    }cout<<endl;
     
 }
