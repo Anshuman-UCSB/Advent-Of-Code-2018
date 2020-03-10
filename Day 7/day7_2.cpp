@@ -4,25 +4,9 @@
 #include "worker.h"
 using namespace std;
 
-#define WORKERS 2
+#define WORKERS 5
 
-struct Rule{
-    char pre;
-    char make;
 
-    Rule(string inp){
-        pre = inp[5];
-        make = inp[36];
-    }
-
-    string to_str(){
-        string out = "";
-        out+=pre;
-        out+=" -> ";
-        out+= make;
-        return out;
-    }
-};
 
 
 
@@ -49,6 +33,20 @@ int main(){
             elems.push_back(rule.pre);
         }
     }
+
+    bool sorted = false;
+    while(!sorted){
+        sorted = true;
+        for(int i = 0;i<elems.size()-1;i++){
+            if(elems[i+1]<elems[i]){
+                char temp = elems[i+1];
+                elems[i+1] = elems[i];
+                elems[i] = temp;
+                sorted = false;
+            }
+        }
+    }
+
     for(Rule rule: rules){
         int ind = find(elems,rule.make); 
         if( ind == -1){
@@ -67,5 +65,30 @@ int main(){
     //initialize workers
     vector<char> done, inProgress, able;
     
-    
+    while(done.size()!=elems.size()){
+        cout<<endl<<"Time "<<time<<endl;
+        getFinished(workers,done);
+        cout<<"Done: ";
+        printVector(done);
+        updateInProgress(workers, inProgress);
+        cout<<"Progress: ";
+        printVector(inProgress);
+        updateAble(done,inProgress,able, elems, rules);
+        cout<<"Able: ";
+        printVector(able);
+        giveJobs(workers,able);
+        for(Worker wrk: workers){
+            if(!wrk.working)
+                continue;
+            cout<<"Worker "<<wrk.id<<":"<<endl;
+            cout<<"    "<<wrk.letter<<": "<<wrk.remainingTime<<endl;
+        }
+        updateTime(time,workers);
+    }
+    cout<<"Answer: "<<time-1<<endl;
+    for(char val: done){
+        cout<<val;
+    }cout<<endl;
 }
+
+//LNRTFJMQZVCIHABKPXYEUGWDSO didn't work
