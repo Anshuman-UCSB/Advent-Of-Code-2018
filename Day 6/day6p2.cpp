@@ -21,12 +21,6 @@ struct Coord{
     }
 };
 
-int getTotalDist(Coord c1, vector<Coord> coords){
-    int sum = 0;
-    for(int i =0;i<coords.size();i++){
-        sum+=getDist(c1, coords[i]);
-    }
-}
 
 int getDist(Coord c1, Coord c2){
     int deltaX = abs(c1.x-c2.x);
@@ -34,14 +28,35 @@ int getDist(Coord c1, Coord c2){
     return deltaX+deltaY;
 }
 
-void evalGrid(char grid[365][365], vector<Coord> coords, int range){
+int getTotalDist(Coord c1, vector<Coord> coords){
+    int sum = 0;
+    for(int i =0;i<coords.size();i++){
+        sum+=getDist(c1, coords[i]);
+    }
+    return sum;
+}
+
+
+int evalGrid(char grid[365][365], vector<Coord>& coords, int range){
+    int size = 0;
     for(int y = 0;y<365;y++){
         for(int x= 0;x<365;x++){
             if(grid[y][x] != '#'){
                 Coord c(x,y);
+                if(getTotalDist(c,coords)<range){
+                    grid[y][x] = '.';
+                    size++;
+                }else{
+                    grid[y][x] = ' ';
+                }
+            }else{
+                if(getTotalDist(Coord(x,y),coords)<range){
+                    size++;
+                }
             }
         }
     }
+    return size;
 }
 
 
@@ -81,6 +96,8 @@ int main(){
     for(int i = 0;i<coords.size();i++){
         grid[coords[i].y][coords[i].x] = '#';
     }
-    printGrid(grid);
+    int area = evalGrid(grid,coords,10000);
 
+    printGrid(grid);
+    cout<<"total area is "<<area<<endl;
 }
