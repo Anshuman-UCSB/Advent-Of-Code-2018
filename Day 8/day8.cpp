@@ -35,10 +35,10 @@ void part1(){
     printVector(input);
     int tmpId = 0;
     char tmpChar = 'A';
-    Node* head = new Node(input, tmpId, tmpChar);
-    cout<<"["<<head->id<<"]"<<endl;
-    printVector(head->metadata);
-    head->printMeta();
+    Node head(input,tmpId, tmpChar);
+    cout<<"["<<head.id<<"]"<<endl;
+    cout<<recursiveSum(head)<<endl;
+
 }
 
 int main(){
