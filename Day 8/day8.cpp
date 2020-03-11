@@ -32,12 +32,13 @@ void printVector(const vector<int>& vect){
 
 void part1(){
     vector<int> input = parse();
-    printVector(input);
+    //printVector(input);
     int tmpId = 0;
-    char tmpChar = 'A';
+    int tmpChar = 1;
     Node head(input,tmpId, tmpChar);
-    cout<<"["<<head.id<<"]"<<endl;
-    cout<<recursiveSum(head)<<endl;
+    
+    cout<<recursiveValue(head)<<endl;
+    //printTree(head, 0);
 
 }
 
