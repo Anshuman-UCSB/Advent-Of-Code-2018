@@ -13,10 +13,10 @@ void printList(Node* head){
     }cout<<endl;
 }
 
-int highScore(int players[PLAYERS]){
-    int max = -1;
+long long int highScore(long long int players[PLAYERS]){
+    long long int max = -1;
     
-    for(int i = 0;i<PLAYERS;i++){
+    for(long long int i = 0;i<PLAYERS;i++){
         max = max<players[i] ? players[i] : max;
     }
 
@@ -24,9 +24,9 @@ int highScore(int players[PLAYERS]){
 }
 
 void partOne(){
-    int players[PLAYERS];
-    int currentPlayer = 0;
-    for(int i = 0;i<PLAYERS;i++){
+    long long int players[PLAYERS];
+    long long int currentPlayer = 0;
+    for(long long int i = 0;i<PLAYERS;i++){
         players[i] = 0;
     }
 
@@ -34,16 +34,16 @@ void partOne(){
     head->last = head;
     head->next = head;
     Node* current = head;
-    int size = 1;
+    long long int size = 1;
 
     cout<<"Current is "<<current->number<<endl;
     cout<<"[-] ";
     print(head, size);
 
-    for(int i = 1;i<=MARBLE;i++){
+    for(long long int i = 1;i<=MARBLE;i++){
 
         if(i%23 == 0){
-            for(int j = 0;j<6;j++)
+            for(long long int j = 0;j<6;j++)
                 left(current);
             //cout<<"Removing current "<<current->number<<endl;
             players[currentPlayer]+= remove(current->last, size);
