@@ -2,7 +2,8 @@
 #include <string>
 using namespace std;
 
-#define INPUT 6042
+#define INPUT 18
+//6042
 
 int getPower(int x, int y){
     int rackId = x+10;
@@ -22,7 +23,33 @@ int main(){
             grid[i][j] = getPower(j,i);
         }
     }
+    //part 2
+    string ans;
+    int max = -1;
+    int sum;
+    for(int size = 1;size<=300;size++){
+        cout<<"Working on size: "<<size<<endl;
+        for(int y = 0;y<300-size;y++){
+            for(int x = 0;x<300-size;x++){
+                sum = 0;
+                for(int xMod = 0;xMod<size;xMod++){
+                    for(int yMod = 0;yMod<size;yMod++){
+                        sum+=grid[y+yMod][x+xMod];
+                    }
+                }
+                if(sum>max){
+                    max = sum;
+                    ans = to_string(x)+','+to_string(y)+','+to_string(size);
+                    cout<<"New answer: "<<ans<<endl;
+                }
+            }
+        }
+    }
+    cout<<"answer "<<ans<<" has the largest power of "<<max<<endl;
 
+
+    /*part 1
+    return 0;
     string ans;
     int max = -1;
     int sum;
@@ -41,5 +68,5 @@ int main(){
         }
     }
     cout<<"coord "<<ans<<" has the largest power of "<<max<<endl;
-
+    */
 }
