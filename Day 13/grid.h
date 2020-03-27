@@ -48,6 +48,7 @@ class Cart{
 
 
 class Grid{
+    int count = -1;
     vector<string> inp;
     vector<vector<char> > grid;
     vector<vector<Cart*> > carts;
@@ -99,6 +100,109 @@ class Grid{
         
     }
     
+    void iter2(){
+        if(count == 1){
+            return;
+        }
+        temp = vector<vector<Cart*> >(grid.size(), vector<Cart* >(grid[0].size(), 0));
+        for(int y = 0;y<grid.size();y++){
+            for(int x = 0;x<grid[0].size();x++){
+                if(carts[y][x]){
+                    //if theres a cart at this position
+                    int nX, nY;
+                    switch(carts[y][x]->dir){
+                        case 0: nX = x; nY = y-1; break;
+                        case 1: nX = x+1; nY = y; break;
+                        case 2: nX = x; nY = y+1; break;
+                        case 3: nX = x-1; nY = y; break;
+                        default: break;
+                    }
+                    bool crash = false;
+                    if(temp[y][x] || temp[nY][nX]){
+                        //There already is a cart where this one should be, meaning it crashed
+                        temp[y][x] = 0;
+                        temp[nY][nX] = 0;
+                        carts[y][x] = 0;
+                        carts[nY][nX] = 0;
+                        cout<<"(temp) Crash found at "<<nX<<","<<nY<<endl<<endl;
+                        crash = true;
+                        continue;
+                    }
+                    if(carts[nY][nX]){
+                        temp[y][x] = 0;
+                        temp[nY][nX] = 0;
+                        carts[y][x] = 0;
+                        carts[nY][nX] = 0;
+                        cout<<"(temp) Crash found at "<<nX<<","<<nY<<endl<<endl;
+                        crash = true;
+                        continue;
+                    }
+                    switch(grid[nY][nX]){
+                        case '+':
+                            carts[y][x]->turn();                           
+                            break;
+                        case '/':
+                            switch(carts[y][x]->dir){
+                                case 0:
+                                    carts[y][x]->dir = 1;
+                                    break;
+                                case 1:
+                                    carts[y][x]->dir = 0;
+                                    break;
+                                case 2:
+                                    carts[y][x]->dir = 3;
+                                    break;
+                                case 3:
+                                    carts[y][x]->dir = 2;
+                                    break;
+                            }
+                            break;
+                        case '\\':
+                            switch(carts[y][x]->dir){
+                                case 0:
+                                    carts[y][x]->dir = 3;
+                                    break;
+                                case 1:
+                                    carts[y][x]->dir = 2;
+                                    break;
+                                case 2:
+                                    carts[y][x]->dir = 1;
+                                    break;
+                                case 3:
+                                    carts[y][x]->dir = 0;
+                                    break;
+                            }
+                            break;
+                    }
+                    if(!crash){
+                        temp[nY][nX] = carts[y][x];
+                        carts[y][x] = 0;
+                    }
+                }
+            }
+        }
+        count = 0;
+        for(int y = 0;y<carts.size();y++){
+            for(int x = 0;x<carts[0].size();x++){
+                carts[y][x] = temp[y][x];
+                if(temp[y][x] != 0){
+                    count++;
+                }
+            }
+        }
+        //wasn't 74,29
+        if(count == 1){
+            for(int y = 0;y<carts.size();y++){
+                for(int x = 0;x<carts[0].size();x++){
+                    if(carts[y][x]){
+                        cout<<"Last cart at: "<<x<<","<<y<<endl;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
     void iter(){
         temp = vector<vector<Cart*> >(grid.size(), vector<Cart* >(grid[0].size(), 0));
         for(int y = 0;y<grid.size();y++){

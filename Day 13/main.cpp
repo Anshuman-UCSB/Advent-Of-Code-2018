@@ -4,11 +4,12 @@ using namespace std;
 
 int main(){
     Grid g = Grid();
-    //g.print();
+    g.print();
     cout<<endl;
     string line;
     while(true){
-        g.iter();
-        //g.print();
+        g.iter2();
+        g.print();
+        cin>>line;
     }
 }
