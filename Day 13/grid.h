@@ -32,8 +32,17 @@ class Cart{
             break;
         }
     }
-    int turn(){
-        return intersection++%3;
+    void turn(){
+        switch(intersection){
+            case 0:
+            dir+=3; break;
+            case 2:
+            dir+=1;
+            break;
+        }
+        dir%=4;
+        intersection++;
+        intersection%=3;
     }
 };
 
@@ -42,6 +51,7 @@ class Grid{
     vector<string> inp;
     vector<vector<char> > grid;
     vector<vector<Cart*> > carts;
+    vector<vector<Cart*> > temp;
     public:
     Grid(){
         string line;
@@ -55,6 +65,7 @@ class Grid{
         w = inp[0].size();
         grid = vector<vector<char> >(l, vector<char>(w, ' '));
         carts = vector<vector<Cart*> >(l, vector<Cart* >(w, 0));
+        temp = vector<vector<Cart*> >(l, vector<Cart* >(w, 0));
         for(int i= 0;i<inp.size();i++){
             for(int j = 0;j<inp[i].size();j++){
                 if(inp[i][j]=='^' || inp[i][j]=='v'){
@@ -89,9 +100,78 @@ class Grid{
     }
     
     void iter(){
+        temp = vector<vector<Cart*> >(grid.size(), vector<Cart* >(grid[0].size(), 0));
         for(int y = 0;y<grid.size();y++){
             for(int x = 0;x<grid[0].size();x++){
-                
+                if(carts[y][x]){
+                    //if theres a cart at this position
+                    int nX, nY;
+                    switch(carts[y][x]->dir){
+                        case 0: nX = x; nY = y-1; break;
+                        case 1: nX = x+1; nY = y; break;
+                        case 2: nX = x; nY = y+1; break;
+                        case 3: nX = x-1; nY = y; break;
+                        default: break;
+                    }
+                    if(temp[y][x] || temp[nY][nX]){
+                        //There already is a cart where this one should be, meaning it crashed
+                        cout<<"(temp) Crash found at "<<nX<<","<<nY<<endl<<endl;
+                        string line;
+                        cin>>line;
+                    }
+                    if(carts[nY][nX]){
+                        //Crash
+                        cout<<"(carts) Crash found at "<<nX<<","<<nY<<endl<<endl;
+                        string line;
+                        cin>>line;
+                        //manual pause lol
+                    }
+                    switch(grid[nY][nX]){
+                        case '+':
+                            carts[y][x]->turn();                           
+                            break;
+                        case '/':
+                            switch(carts[y][x]->dir){
+                                case 0:
+                                    carts[y][x]->dir = 1;
+                                    break;
+                                case 1:
+                                    carts[y][x]->dir = 0;
+                                    break;
+                                case 2:
+                                    carts[y][x]->dir = 3;
+                                    break;
+                                case 3:
+                                    carts[y][x]->dir = 2;
+                                    break;
+                            }
+                            break;
+                        case '\\':
+                            switch(carts[y][x]->dir){
+                                case 0:
+                                    carts[y][x]->dir = 3;
+                                    break;
+                                case 1:
+                                    carts[y][x]->dir = 2;
+                                    break;
+                                case 2:
+                                    carts[y][x]->dir = 1;
+                                    break;
+                                case 3:
+                                    carts[y][x]->dir = 0;
+                                    break;
+                            }
+                            break;
+                    }
+                    
+                    temp[nY][nX] = carts[y][x];
+                    carts[y][x] = 0;
+                }
+            }
+        }
+        for(int y = 0;y<carts.size();y++){
+            for(int x = 0;x<carts[0].size();x++){
+                carts[y][x] = temp[y][x];
             }
         }
     }
