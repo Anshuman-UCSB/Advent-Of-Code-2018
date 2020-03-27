@@ -38,12 +38,13 @@ void part1(){
     }cout<<endl;
 }
 
+int check(vector<int>& v, string find);
 void part2(){
-    string INPUT = "68190";
+    string INPUT = "681901";
     int ANSSIZE = INPUT.size();
     vector<int> recip = {3,7};
     int e1(0), e2(1);
-    int ans = 1;
+    int checkVal = 32;
     while(true){
         //print(recip);
         string newRecip = to_string(recip[e1]+recip[e2]);
@@ -54,17 +55,32 @@ void part2(){
         e1%=recip.size();
         e2+=recip[e2]+1;
         e2%=recip.size();
-        ans++;
+        if(recip.size()>checkVal){
+            int val = check(recip,INPUT);
+            if(val==-1){
+                cout<<"Didn't find answer in size "<<checkVal<<endl;
+            }else{
+                cout<<"Answer is "<<val<<endl;
+                return;
+            }
+            checkVal*=2;
+        }
+    }
+}
+
+int check(vector<int>& v, string find){
+    for(int i = 0;i<v.size()-find.size();i++){
         bool found = true;
-        for(int i = 0;i<ANSSIZE;i++){
-            if(recip[recip.size()-1-i] != INPUT[ANSSIZE-1-i]-'0'){
+        for(int c = 0;c<find.size();c++){
+            if(v[c+i]!= find[c]-'0'){
                 found = false;
                 break;
             }
         }
-        if(!found)
-            continue;
-        cout<<"Found recipie at "<<recip.size()-ANSSIZE<<endl;
-        return;
+        if(found){
+            return i;
+        }        
     }
+
+    return -1;
 }
