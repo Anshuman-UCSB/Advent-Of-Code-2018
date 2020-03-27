@@ -67,10 +67,15 @@ vector<int> iter(vector<int>& vect, vector<Rule>& rules){
         for(int j = 0;j<rules.size();j++){
             rule = rules[j];
             bool plant = true;
-            for(int ind:rule.pre){
-                if(!includes(vect,i+ind)){
-                    plant = false;
-                    break;
+            for(int k = -2;k<3;k++){
+                if(includes(rules[k].pre,k)){
+                    if(!includes(vect,i+k)){
+                        plant = false;
+                    }
+                } else{
+                    if(includes(vect,i+k)){
+                        plant = false;
+                    }
                 }
             }
             if (plant){
