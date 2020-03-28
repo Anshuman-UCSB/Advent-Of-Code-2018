@@ -11,8 +11,8 @@ class Grid{
     public:
     vector<vector<Unit*> > g;
     vector<vector<int> > d;
-    int dx[4] = {0,1,0,-1};
-    int dy[4] = {-1,0,1,0};
+    int dx[4] = {0,1,-1,0};
+    int dy[4] = {-1,0,0,1};
     Grid(){
         g.clear();
     }
@@ -66,12 +66,23 @@ class Grid{
                     cout << "#";
                 else if(d[y][x] == 0)
                     cout << "@";
-                else
+                else if(d[y][x] < 10)
                     cout << "\033[1;"<<(31+d[y][x]%6)<<"m"<<d[y][x]%10<<"\033[0m";
+                else
+                    cout<<" ";
 
             }cout<<endl;
         }
         cout<<endl;
+    }
+
+    bool canMove(int x, int y){
+        for(int i =0;i<4;i++){
+            if(g[y+dy[i]][x+dx[i]]->id == '.'){
+                return true;
+            }
+        }
+        return false;
     }
 
     bool canAtk(int x, int y){
@@ -117,9 +128,10 @@ class Grid{
             change = false;
             for(int y = 0;y<g.size();y++){
                 for(int x = 0;x<g[0].size();x++){
-                    if(d[y][x] == cur){
+                    if(d[y][x] == cur && g[y][x]->id == '.'){
                         for(int i= 0;i<4;i++){
-                            if(d[y+dy[i]][x+dx[i]] == -2 || d[y+dy[i]][x+dx[i]] == enem){
+                            //if adjacent spot is 
+                            if(d[y+dy[i]][x+dx[i]] == -2){
                                 d[y+dy[i]][x+dx[i]] = cur+1;
                                 change = true;
                             }
@@ -133,7 +145,9 @@ class Grid{
 
     Coord getClosest(int x, int y){
         updateDist(x,y);
+        printDist();
         char enem = g[y][x]->id == 'G'?'E':'G';
+        cout<<"searching for "<<enem<<endl;
         int minDist = 99999;
         int ax(-1), ay(-1);
         for(int y = 0;y<d.size();y++){
@@ -143,6 +157,7 @@ class Grid{
                 }
                 //x,y is an enemy
                 int dist = d[y][x] <= 0? 99999: d[y][x];
+                cout<<"The distance for enemy at "<<x<<", "<<y<<" is "<<d[y][x]<<endl;
                 if(dist<minDist){
                     minDist = dist;
                     ax = x;
@@ -152,10 +167,89 @@ class Grid{
                 }
             }
         }
+        cout<<"Closest is "<<ax<<", "<<ay<<endl;
         return Coord(ax,ay);
     }
 
-    
+    int getMove(int x, int y){
+
+        Coord target = getClosest(x,y);
+        if(target.y == -1 && target.x == -1){
+            return -1;
+        }
+        updateDist(target.x,target.y);
+        int dir = -1;
+        int min = 99999;
+        for(int i= 0;i<4;i++){
+            int dist = d[y+dy[i]][x+dx[i]]<=0?99999:d[y+dy[i]][x+dx[i]];
+            if(dist<min){
+                dir = i;
+                min = dist;
+            }
+        }
+        return dir;
+    }
+
+
+    void takeTurn(int x,int y){
+        if(!canAtk(x,y)) {//if you can't attack
+            if(canMove(x,y)){
+                int dir = getMove(x,y);
+                if(dir == -1){
+                    return;
+                }
+                move(x,y,dir);
+            }
+        }
+
+    }
+
+    Coord findId(int uq){
+        for(int y = 0;y<g.size();y++){
+            for(int x = 0;x<g[0].size();x++){
+                if(g[y][x]->uniqueId == uq){
+                    return Coord(x,y);
+                }
+            }
+        }
+        return Coord(-1,-1);
+    }
+
+    vector<int> getOrder(){
+        vector<int> order;
+        for(int y = 0;y<g.size();y++){
+            for(int x = 0;x<g[0].size();x++){
+                if(g[y][x]->id == 'G' || g[y][x]->id == 'E'){
+                    order.push_back(g[y][x]->uniqueId);
+                }
+            }
+        }
+        return order;
+    }
+
+    Coord find(int uq){
+        for(int y = 0;y<g.size();y++){
+            for(int x = 0;x<g[0].size();x++){
+                if(g[y][x]->uniqueId==uq){
+                    return Coord(x,y);
+                }
+            }
+        }
+        cout<<"DID NOT FIND UNIQUE ID!!"<<endl;
+    }
+
+    void iter(){
+        vector<int> order = getOrder();
+        
+        for(int i = 0;i<order.size();i++){
+            Coord c = find(order[i]);
+            // cout<<"Moved "<<order[i]<<" at "<<c.x<<", "<<c.y<<endl;
+            takeTurn(c.x,c.y);
+        }
+        
+    }
+
+
 };
 
 

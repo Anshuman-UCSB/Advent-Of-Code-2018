@@ -19,8 +19,8 @@ class Unit{
         id = ' ';
         hp = dmg = -1;
     }
-    Unit(char quick, int id){
-        uniqueId = id;
+    Unit(char quick, int iid){
+        uniqueId = iid;
         switch(quick){
             case 'E':
                 id = 'E';

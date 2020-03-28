@@ -10,9 +10,11 @@ int main(){
 
 void p1(){
     Grid grid("input.txt");
+    cout<<"  Starting gen: "<<endl;
     grid.print();
-    grid.updateDist(2,1);
-    Coord c = grid.getClosest(3,4);
-    grid.printDist();
-    cout<<c.x<<", "<<c.y<<endl;
+    for(int i = 1;i<6;i++){
+        cout<<"  Gen "<<i<<": "<<endl;
+        grid.iter();
+        grid.print();
+    }
 }
