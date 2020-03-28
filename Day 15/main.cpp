@@ -12,6 +12,20 @@ struct Character{
     char type;
     Character(int h, int d, char t, int xi, int yi):hp(h), dmg(d), type(t), x(xi), y(yi){}
     Character(){}
+
+    string toStr(){
+        string out = " ";
+        out[0] = type;
+        out+="[";
+        out+=to_string(hp);
+        out+="] at (";
+        out+=to_string(x);
+        out+=", ";
+        out+=to_string(y);
+        out+=")";
+
+        return out;
+    }
 };
 typedef vector<Character> charGrid;
 
@@ -128,7 +142,13 @@ void printVector(grid v){
         for(int x = 0;x<v[0].size();x++){
             if(v[y][x] <'8' && v[y][x]>='0'){
                 cout << "\033[1;"<<(30+ctoi(v[y][x]))<<"m"<<v[y][x]<<"\033[0m";
-            } else
+            } 
+            else if(v[y][x] == 'G'){
+                cout << "\033[1;"<<(31)<<"m"<<v[y][x]<<"\033[0m";
+            }else if(v[y][x] == 'E'){
+                cout << "\033[1;"<<(32)<<"m"<<v[y][x]<<"\033[0m";
+            }
+            else
                 cout<<v[y][x];
         }cout<<endl;
     }
@@ -192,23 +212,32 @@ bool canAtk(grid& active, Character c){
 
 void print(vector<Character>& c){
     for(int i = 0;i<c.size();i++){
-        cout<<c[i].type<<"["<<c[i].hp<<"] at ("<<c[i].x<<", "<<c[i].y<<")"<<endl;
+        cout<<c[i].toStr()<<endl;
     }
 }
 
-charGrid getOrder(charGrid e, charGrid g){
-    charGrid out;
-    
-    while(!e.empty()&& !g.empty()){
-        Character min;
-        if(e.empty()){
-            min = g[g.size()-1];
-            g.pop_back();
-        } else{
-            min = e[e.size()-1];
-            e.pop_back();
-        }
+void getOrder(charGrid e, charGrid g, charGrid& out){
+    out.clear();    
+    while(!e.empty()){
+        out.push_back(e[e.size()-1]);
+        e.pop_back();
+    }
+    while(!g.empty()){
+        out.push_back(g[g.size()-1]);
+        g.pop_back();
+    }
 
+    bool sorted = false;
+    while(!sorted){
+        sorted = true;
+        for(int i = 0;i<out.size()-1;i++){
+            if(out[i+1].y<out[i].y || (out[i+1].y == out[i].y && out[i+1].x<out[i].x)){
+                Character t = out[i+1];
+                out[i+1] = out[i];
+                out[i] = t;
+                sorted = false;
+            }
+        }
     }
 }
 
@@ -227,6 +256,8 @@ Current methods:
     int distance(distMap, character) returns the distance on distmap for character
     character getClosest(map, character, enemies) returns closest enemy to character on map
 
+    getOrder(e, g, &out) sorts e + g in out
+
     grid makeMap(map, c, g) compounds all submaps to make one visual map
     
     bool canAtk(active, c) returns true if enemy is able to be attacked for c
@@ -239,10 +270,15 @@ void part1(){
 
     print(g);
     print(e);
+
+    cout<<endl;
+    charGrid order = charGrid();
+    getOrder(e,g,order);
+    print(order);
     // Character min = getClosest(map, g[3],e);
     // cout<<min.x<<", "<<min.y<<endl;
     grid activeMap(makeMap(map,e,g));
     // cout<<canAtk(activeMap,g[3])<<endl;
     printVector(activeMap);
-    //printVector(distGrid(map, 2,2));
+    // printVector(distGrid(map, 2,2));
 }
