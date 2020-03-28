@@ -11,6 +11,7 @@ struct Character{
     int x,y;
     char type;
     Character(int h, int d, char t, int xi, int yi):hp(h), dmg(d), type(t), x(xi), y(yi){}
+    Character(){}
 };
 typedef vector<Character> charGrid;
 
@@ -38,13 +39,16 @@ grid distGrid(grid& map, int x, int y){
         }
         catch(...){}
     }
-    for(char num = '2';num<'0'+CALC;num++){
+    bool found1;
+    for(char num = '2';;num++){
+        found1 = false;
         for(int y = 0;y<m.size();y++){
             for(int x = 0;x<m[0].size();x++){
                 if(m[y][x] == num-1){
                     for(int i = 0;i<4;i++){
                         try{
                             if(m[y+dy[i]][x+dx[i]] == '.'){
+                                found1 = true; //Found a new num
                                 m[y+dy[i]][x+dx[i]] = num;
                             }
                         }
@@ -52,6 +56,9 @@ grid distGrid(grid& map, int x, int y){
                     }
                 }
             }
+        }
+        if(!found1){
+            break;
         }
     }
     return m;
@@ -128,20 +135,99 @@ void printVector(grid v){
     cout<<endl;
 }
 
+int distance(grid& distMap, Character c1){
+    return distMap[c1.y][c1.x];
+}
+
+Character getClosest(grid& map, Character c, charGrid e){
+    int min = 999999;
+    grid dist = distGrid(map, c.x,c.y);
+    Character out;
+    for(int i = 0;i<e.size();i++){
+        if(distance(dist,e[i])<=min){
+            if(distance(dist,e[i]) == min){
+                if(out.y == e[i].y){
+                    if(out.x<e[i].x){
+                        continue;
+                    }
+                }
+                if(out.y<e[i].y){
+                    continue;
+                }
+                
+            }
+            min = distance(dist,e[i]);
+            out = e[i];
+        }
+    }
+    return out;
+}
+
+grid makeMap(grid map, charGrid& c, charGrid& g){
+    for(int i = 0;i<c.size();i++){
+        map[c[i].y][c[i].x] = 'E';
+    }
+    for(int i = 0;i<g.size();i++){
+        map[g[i].y][g[i].x] = 'G';
+    }
+    return map;    
+}
+
+bool canAtk(grid& active, Character c){
+    char eType = 'E';
+    if(c.type == 'E'){
+        eType = 'G';
+    }
+    int dx[4] = {0,1,0,-1};
+    int dy[4] = {1,0,-1,0};
+    for(int i = 0;i<4;i++){
+        try{
+            if(active[c.y+dy[i]][c.x+dx[i]] == eType){
+                return true;
+            }
+        } catch(...){}
+    }
+    return false;
+}
+
 void print(vector<Character>& c){
     for(int i = 0;i<c.size();i++){
         cout<<c[i].type<<"["<<c[i].hp<<"] at ("<<c[i].x<<", "<<c[i].y<<")"<<endl;
     }
 }
 
+
+/*
+Current methods:
+    print(vector<Char>) prints out vector of Characters
+    printVector(vector<vector<char> >) prints out 2d vector, colors nums 0-9
+    int ctoi(char) returns '8' to 8
+
+    grid parseRaw() reads from input to a 2d grid
+    grid parseMap(raw) reads from raw to make grid of just the map
+    vect parseElf(raw) returns vector of only elf characters
+    vect parseGoblin(raw) returns vector of only goblin characters
+    
+    grid distGrid(map, x, y) returns a grid of distances from some x, y
+    int distance(distMap, character) returns the distance on distmap for character
+    character getClosest(map, character, enemies) returns closest enemy to character on map
+
+    grid makeMap(map, c, g) compounds all submaps to make one visual map
+    
+    bool canAtk(active, c) returns true if enemy is able to be attacked for c
+*/
+
 void part1(){
     grid raw = parseRaw();
     grid map = parseMap(raw);
     charGrid g(parseGoblin(raw)), e(parseElf(raw));
 
-    printVector(raw);
-    printVector(map);
     print(g);
     print(e);
-    printVector(distGrid(map, 2,2));
+    // Character min = getClosest(map, g[3],e);
+    // cout<<min.x<<", "<<min.y<<endl;
+    grid activeMap(makeMap(map,e,g));
+    // cout<<canAtk(activeMap,g[3])<<endl;
+    printVector(activeMap);
+    //printVector(distGrid(map, 2,2));
 }
