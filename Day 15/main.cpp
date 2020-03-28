@@ -196,6 +196,21 @@ void print(vector<Character>& c){
     }
 }
 
+charGrid getOrder(charGrid e, charGrid g){
+    charGrid out;
+    
+    while(!e.empty()&& !g.empty()){
+        Character min;
+        if(e.empty()){
+            min = g[g.size()-1];
+            g.pop_back();
+        } else{
+            min = e[e.size()-1];
+            e.pop_back();
+        }
+
+    }
+}
 
 /*
 Current methods:
