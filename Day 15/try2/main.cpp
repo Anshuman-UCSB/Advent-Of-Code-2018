@@ -12,7 +12,7 @@ void p1(){
     Grid grid("input.txt");
     cout<<"  Starting gen: "<<endl;
     grid.print();
-    for(int i = 1;i<3;i++){
+    for(int i = 1;i<50;i++){
         cout<<"\n----Gen "<<i<<": "<<endl;
         grid.iter();
         grid.print();

@@ -11,7 +11,7 @@ class Grid{
     public:
     vector<vector<Unit*> > g;
     vector<vector<int> > d;
-    int dx[4] = {0,1,-1,0};
+    int dx[4] = {0,-1,1,0};
     int dy[4] = {-1,0,0,1};
     Grid(){
         g.clear();
@@ -136,7 +136,6 @@ class Grid{
     }
 
     void updateDist(int x, int y){
-        int enem = g[y][x]->id == 'E'?-4:-3;
         d = vector<vector<int> >(g.size(), vector<int>(g[0].size(),-5));
         //-2 is space, -1 wall, 0 is center
         for(int y = 0;y<g.size();y++){
@@ -207,9 +206,9 @@ class Grid{
     }
 
     int getMove(int x, int y){
-
         Coord target = getClosest(x,y);
         if(target.y == -1 && target.x == -1){
+            cout<<g[y][x]->toStr()<<" Was not able to find a path!"<<endl;
             return -1;
         }
         updateDist(target.x,target.y);
@@ -217,7 +216,7 @@ class Grid{
         int min = 99999;
         for(int i= 0;i<4;i++){
             int dist = d[y+dy[i]][x+dx[i]]<=0?99999:d[y+dy[i]][x+dx[i]];
-            if(dist<min){
+            if(dist<min && g[y+dy[i]][x+dx[i]]->id == '.'){
                 dir = i;
                 min = dist;
             }
