@@ -132,6 +132,7 @@ class Grid{
             g[c.y][c.x]->id='.';
             g[c.y][c.x]->hp = 0;
             g[c.y][c.x]->dmg = 0;
+            g[c.y][c.x]->uniqueId = -1;
         }
     }
 
@@ -225,6 +226,35 @@ class Grid{
     }
 
 
+    int sumGame(){
+        int out = 0;
+        bool hasG(false), hasE(false);
+        for(int y = 0;y<g.size();y++){
+            for(int x = 0;x<g[0].size();x++){
+                if(g[y][x]->id == 'G'){
+                    hasG = true;
+                }
+                if(g[y][x]->id == 'E'){
+                    hasE = true;
+                }
+                if(hasG && hasE){
+                    return -1;
+                }
+            }
+        }
+        if(hasG || hasE){
+            char find = hasG?'G':'E';
+            for(int y = 0;y<g.size();y++){
+                for(int x = 0;x<g[0].size();x++){
+                    if(g[y][x]->id == find){
+                        out+=g[y][x]->hp;
+                    }
+                }
+            }
+        }
+        return out;
+    }
+
     void takeTurn(int x,int y){
         Unit* target = g[y][x];
         if(!canAtk(x,y)) {//if you can't attack
@@ -287,6 +317,7 @@ class Grid{
             }
         }
         cout<<"DID NOT FIND UNIQUE ID!!"<<endl;
+        return Coord(-1,-1);
     }
 
     void iter(){
@@ -294,10 +325,28 @@ class Grid{
         
         for(int i = 0;i<order.size();i++){
             Coord c = find(order[i]);
+            if(c.y == -1 && c.x == -1){
+                cout<<"Could not find character for move"<<endl;
+                continue;
+            }
             // cout<<"Moved "<<order[i]<<" at "<<c.x<<", "<<c.y<<endl;
             takeTurn(c.x,c.y);
         }
         
+    }
+
+    int play(){
+        int gen = 0;
+        do{
+            gen++;
+            cout<<"Generation: "<<gen<<endl;
+            iter();
+            print();
+            printUnits();
+        }while(sumGame()==-1);
+        cout<<"gameSum: "<<sumGame()<<endl;
+        cout<<"Final gen is "<<gen<<endl;
+        return gen*sumGame();
     }
 
 
