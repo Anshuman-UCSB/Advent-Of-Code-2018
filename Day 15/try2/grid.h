@@ -113,17 +113,23 @@ class Grid{
                 }else if(g[y][x]->id == '.'){
                     d[y][x] = -2;
                 }else if(g[y][x]->id == 'E'){
-                    d[y][x] = -3;
+                    d[y][x] = -2;
                 }else if(g[y][x]->id == 'G'){
-                    d[y][x] = -4;
+                    d[y][x] = -2;
                 } else{
                     d[y][x] = -5;
                 }
             }
         }
         d[y][x] = 0;
+        for(int i= 0;i<4;i++){
+            //if adjacent spot is 
+            if(d[y+dy[i]][x+dx[i]] == -2){
+                d[y+dy[i]][x+dx[i]] = 1;
+            }
+        }
         bool change = true;
-        int cur = 0;
+        int cur = 1;
         while(change){
             change = false;
             for(int y = 0;y<g.size();y++){
@@ -145,9 +151,7 @@ class Grid{
 
     Coord getClosest(int x, int y){
         updateDist(x,y);
-        printDist();
         char enem = g[y][x]->id == 'G'?'E':'G';
-        cout<<"searching for "<<enem<<endl;
         int minDist = 99999;
         int ax(-1), ay(-1);
         for(int y = 0;y<d.size();y++){
@@ -157,7 +161,6 @@ class Grid{
                 }
                 //x,y is an enemy
                 int dist = d[y][x] <= 0? 99999: d[y][x];
-                cout<<"The distance for enemy at "<<x<<", "<<y<<" is "<<d[y][x]<<endl;
                 if(dist<minDist){
                     minDist = dist;
                     ax = x;
@@ -167,7 +170,6 @@ class Grid{
                 }
             }
         }
-        cout<<"Closest is "<<ax<<", "<<ay<<endl;
         return Coord(ax,ay);
     }
 
