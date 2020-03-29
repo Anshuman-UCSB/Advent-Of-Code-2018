@@ -2,6 +2,8 @@
 #define UNIT_H
 
 #include <string>
+#include <sstream>
+using namespace std;
 
 struct Coord{
     int x, y;
@@ -41,6 +43,11 @@ class Unit{
                 hp = dmg = -1;
                 break;
         }
+    }
+    string toStr(){
+        stringstream ss;
+        ss<<id<<"_"<<uniqueId<<" ("<<hp<<")";
+        return ss.str();
     }
 };
 

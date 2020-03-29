@@ -12,10 +12,11 @@ void p1(){
     Grid grid("input.txt");
     cout<<"  Starting gen: "<<endl;
     grid.print();
-    for(int i = 1;i<7;i++){
-        cout<<"  Gen "<<i<<": "<<endl;
+    for(int i = 1;i<3;i++){
+        cout<<"\n----Gen "<<i<<": "<<endl;
         grid.iter();
         grid.print();
+        grid.printUnits();
         // grid.printDist();
     }
 }

@@ -102,6 +102,39 @@ class Grid{
         g[y+dy[dir]][x+dx[dir]] = temp;
     }
 
+    void atk(int x, int y){
+        char enem;
+        if (g[y][x]->id=='G'){
+            enem = 'E';
+        } else if (g[y][x]->id == 'E'){
+            enem = 'G';
+        }
+        Unit* target = new Unit('T',-1);
+        target->hp = 201;
+        if(g[y][x]->hp>0){
+            if(g[y-1][x]->id == enem){
+                target = g[y-1][x];
+            }
+            if(g[y][x-1]->id == enem && g[y][x-1]->hp<target->hp){
+                target = g[y][x-1];
+            }
+            if(g[y][x+1]->id == enem && g[y][x+1]->hp<target->hp){
+                target = g[y][x+1];
+            }
+            if(g[y+1][x]->id == enem && g[y+1][x]->hp<target->hp){
+                target = g[y+1][x];
+            }
+        }
+        target->hp-=g[y][x]->dmg;
+        // cout<<g[y][x]->toStr()<<" attacked "<<target->toStr()<<endl;
+        if(target->hp<=0){
+            Coord c = find(target->uniqueId);
+            g[c.y][c.x]->id='.';
+            g[c.y][c.x]->hp = 0;
+            g[c.y][c.x]->dmg = 0;
+        }
+    }
+
     void updateDist(int x, int y){
         int enem = g[y][x]->id == 'E'?-4:-3;
         d = vector<vector<int> >(g.size(), vector<int>(g[0].size(),-5));
@@ -194,6 +227,7 @@ class Grid{
 
 
     void takeTurn(int x,int y){
+        Unit* target = g[y][x];
         if(!canAtk(x,y)) {//if you can't attack
             if(canMove(x,y)){
                 int dir = getMove(x,y);
@@ -202,6 +236,12 @@ class Grid{
                 }
                 move(x,y,dir);
             }
+        }
+        Coord c = find(target->uniqueId);
+        if(canAtk(c.x,c.y)){
+            // cout<<target->toStr()<<" is at "<<c.x<<", "<<c.y<<endl;
+            atk(c.x,c.y);
+            // cout<<"ATTACKING"<<endl;
         }
 
     }
@@ -215,6 +255,16 @@ class Grid{
             }
         }
         return Coord(-1,-1);
+    }
+
+    void printUnits(){
+        for(int y = 0;y<g.size();y++){
+            for(int x = 0;x<g[0].size();x++){
+                if(g[y][x]->id == 'G' || g[y][x]->id == 'E'){
+                    cout<<g[y][x]->toStr()<<endl;
+                }
+            }
+        }
     }
 
     vector<int> getOrder(){
