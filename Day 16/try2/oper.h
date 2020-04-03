@@ -42,6 +42,26 @@ struct example{
 };
 
 struct evaluator{
+    set<int> possbile;
+    map<int, string> translate{
+        {0 , "addr"},
+        {1 , "addi"},
+        {2 , "mulr"},
+        {3 , "muli"},
+        {4 , "banr"},
+        {5 , "bani"},
+        {6 , "borr"},
+        {7 , "bori"},
+        {8 , "setr"},
+        {9 , "seti"},
+        {10 , "gtir"},
+        {11 , "gtri"},
+        {12 , "gtrr"},
+        {13 , "eqir"},
+        {14 , "eqri"},
+        {15 , "eqrr"}
+    };
+
     void addr(const vector<int>& cmd, vector<int>& reg){
         reg[cmd[3]] = reg[cmd[1]]+reg[cmd[2]];
     }
@@ -106,6 +126,7 @@ struct evaluator{
         reg[cmd[3]] = reg[cmd[1]]==reg[cmd[2]]?1:0;
     }
 
+
     vector<int> eval(int opc, const vector<int> cmd, const vector<int>& reg){
         vector<int> temp(reg);
         switch(opc){
@@ -131,6 +152,13 @@ struct evaluator{
 
 };
 
+template <class T>
+void print(vector<T> v){
+    cout<<"[ ";
+    for(T& val: v){
+        cout<<val<<" "<<endl;
+    }cout<<"]\n";
+}
 
 
 #endif
