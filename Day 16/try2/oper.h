@@ -79,19 +79,19 @@ struct evaluator{
     }
 
     void banr(const vector<int>& cmd, vector<int>& reg){
-        reg[cmd[3]] = reg[cmd[1]]&reg[cmd[2]];
+        reg[cmd[3]] = reg[cmd[1]] & reg[cmd[2]];
     }
 
     void bani(const vector<int>& cmd, vector<int>& reg){
-        reg[cmd[3]] = reg[cmd[1]]&cmd[2];
+        reg[cmd[3]] = reg[cmd[1]] & cmd[2];
     }
 
     void borr(const vector<int>& cmd, vector<int>& reg){
-        reg[cmd[3]] = reg[cmd[1]]^reg[cmd[2]];
+        reg[cmd[3]] = reg[cmd[1]] | reg[cmd[2]];
     }
 
     void bori(const vector<int>& cmd, vector<int>& reg){
-        reg[cmd[3]] = reg[cmd[1]]^cmd[2];
+        reg[cmd[3]] = reg[cmd[1]] | cmd[2];
     }
 
     void setr(const vector<int>& cmd, vector<int>& reg){
@@ -127,6 +127,23 @@ struct evaluator{
     }
 
 
+    bool iter(vector<example>& ex, map<int, int>& OPCmap){
+        for(example& val:ex){
+            if(val.possible.size() == 1){
+                OPCmap[val.opc] = *val.possible.begin();
+                applySolved(ex, OPCmap[val.opc]);
+                return true;
+            }
+        }
+
+    }
+
+    void applySolved(vector<example>& ex, int solved){
+        for(example& val:ex){
+            val.possible.erase(solved);
+        }
+    } 
+
     vector<int> eval(int opc, const vector<int> cmd, const vector<int>& reg){
         vector<int> temp(reg);
         switch(opc){
@@ -156,7 +173,7 @@ template <class T>
 void print(vector<T> v){
     cout<<"[ ";
     for(T& val: v){
-        cout<<val<<" "<<endl;
+        cout<<val<<" ";
     }cout<<"]\n";
 }
 
