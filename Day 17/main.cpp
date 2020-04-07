@@ -1,12 +1,16 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <queue>
+#include "qGrid.h"
 using namespace std;
 using vector2d = vector<vector<char>>;
 
 void part1();
+void part1queue();
 int main(){
-    part1();
+    //part1();
+    qGrid1();
 }
 
 void print(vector<char> v){
@@ -50,6 +54,7 @@ int inputBounds(){
         maxY = max(maxY, yr);
     }
     file.close();
+    cout<<maxY+1<<endl;
     return maxY+1;
 }
 
@@ -178,6 +183,21 @@ void part1(){
         last = val;
     }
     cout<<"Final score is "<<val<<endl;
+}
+
+void update(vector2d& map, pair<int, int> coord){
+    
+}
+
+void part1queue(){
+    queue<pair<int, int>> q;
+    int l = inputBounds();
+    int w(2000);
+    vector2d map(l, vector<char>(w+500,'.'));
+    map[0][500]= '+';
+    parse(map);
+    map[1][500]='|';
+
 }
 
 
