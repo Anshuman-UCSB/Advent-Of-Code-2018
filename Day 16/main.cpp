@@ -29,7 +29,7 @@ int valid(vector<string> set){
     //     cout<<reg[i]<<" ";
     // }cout<<"]\n";
 
-    string cmdRaw = set[1];
+    string cmdRaw = set[1]; 
     vector<int> cmd(4);
     cmd[0] = stoi(cmdRaw.substr(0,cmdRaw.find(" ")));
     cmdRaw = cmdRaw.substr(cmdRaw.find(" ")+1);
