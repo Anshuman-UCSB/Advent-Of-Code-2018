@@ -101,9 +101,12 @@ struct Grid{
 int main(){
     Grid g;
     g.print();
-    for(int i = 0;i<10;i++){
+    for(int i = 0;i<1000000000;i++){
+        if((i+1)%1000 == 0){
+            cout<<"Min: "<<i+1<<endl;
+        }
         g.iter();
-        g.print();
     }
+    g.print();
     cout<<"Resource score of "<<g.part1()<<endl;
 }
