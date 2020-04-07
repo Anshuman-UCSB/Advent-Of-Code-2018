@@ -1,11 +1,14 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <map>
 
 using namespace std;
 
 struct Grid{
     vector<vector<char>> g;
+    map<vector<vector<char>>, vector<int>> visited;
+    int min = 0;
     Grid(){
         fstream file("input.txt");
         string line;
@@ -77,8 +80,20 @@ struct Grid{
                         break;
                 }
 
+        min++;
+        if(min == 524){
+            cout<<"Skipping iterations"<<endl;
+            min+=28*35714000;
+        }
         g = t;
+        visited[g].push_back(min);
+        //for(auto& c:visited[g]){
+        //    cout<<c<<" ";
+        //}cout<<endl;
     }
+    //200349 too low
+    //202806
+    //Loops every 28
 
     int part1(){
         int w(0),l(0);
@@ -101,9 +116,9 @@ struct Grid{
 int main(){
     Grid g;
     g.print();
-    for(int i = 0;i<1000000000;i++){
-        if((i+1)%1000 == 0){
-            cout<<"Min: "<<i+1<<endl;
+    for(;g.min<1000000000;){
+        if((g.min+1)%1000 == 0){
+            cout<<"min: "<<g.min+1<<endl;
         }
         g.iter();
     }
